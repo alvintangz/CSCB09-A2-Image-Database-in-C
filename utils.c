@@ -16,7 +16,7 @@ int tokenize(char *cmd, char **cmd_argv) {
 	char *token;
 	int current_tok = 0;
 	token = strtok(cmd, DELIMITERS);
-	while(token[0] != '\0') {
+	while(token != NULL) {
 		cmd_argv[current_tok] = token;
 		token = strtok(NULL, DELIMITERS);
 		current_tok++;

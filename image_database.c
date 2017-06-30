@@ -29,14 +29,15 @@ int main(void) {
         while(fgets(buf, BUFFER_SIZE, stdin) != NULL) {
                 num_tokens = tokenize(buf, args);
                 if(args[0][0] == 'i' && num_tokens == 5) {
-                        printf("i success.");
-                        /** tree_insert(root_ptr, ); **/
+                        char *atrs_and_filename[4] = {args[1], args[2], args[3], args[4]};
+                        tree_insert(root_ptr, atrs_and_filename);
                 } else if(args[0][0] == 'q' && num_tokens == 4) {
-                        printf("q success.");
+                        char *atrs[3] = {args[1], args[2], args[3]};
+                        tree_search(root_ptr, atrs);
                 } else if(args[0][0] == 'p' && num_tokens == 1) {
-                        printf("p success.");
+                        tree_print(root_ptr);
                 } else {
-                        fprintf(stderr, "Invalid command.");
+                        fprintf(stderr, "Invalid command.\n");
                 }
 
         }
