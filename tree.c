@@ -61,18 +61,26 @@ int found_sibling(struct TreeNode *root, char *value) {
 	return count;
 }
 
+/**
+ * Creates nodes from root, values and level up to level 5. At level 5, file names
+ * will be put into nodes.
+ *
+**/
 void create_nodes(struct TreeNode *root, char **values, int level) {
 	/** If a node or nodes still need to be created for attributes of the file **/
 	if(level < 5) {
-		/** If the root of the file has a value equal to that of the current attribute **/
+		// If the root has a value equal to that of the current attribute
 		if(strcmp(root->value, values[level-2]) == 0) {
 			/** EMPTY **/
+		// If the a node of a sibling of root has a value equal to that of the current attribute
 		} else if(found_sibling(root, values[level-2]) != -1) {
 			int iterations = found_sibling(root, values[level-2]);
 			for(int i = 0; i < iterations; i++) {
 				root = root->sibling;
 			}
 		} else {
+			/** PLEASE EXCUSE MY CODE; I HAVE MULTIPLE ATTEMPTS BELOW **/
+			// Store variables
 			struct TreeNode *with_val = allocate_node(values[level-2]);
 			struct TreeNode *temp = root;
 			struct TreeNode *keep = NULL;
@@ -107,6 +115,7 @@ void create_nodes(struct TreeNode *root, char **values, int level) {
 				root->child = with_val->child;
 			}
 			/**
+			UNUSED CODE:
 			struct TreeNode *temp = root;
 			if(strcmp(values[level-2], root->value) < 0) {
 				root->value = values[level-2];
@@ -120,10 +129,40 @@ void create_nodes(struct TreeNode *root, char **values, int level) {
 			root->sibling = allocate_node(values[level-2]);
 			root = root->sibling;
 			**/
+
+			/**
+			ALSO (ANOTHER ATEMPT):
+						// If the root's value is lesser in value in alphabetical order than the value soon to be inserted
+			if(strcmp(root->value, values[level-2]) < 0){
+				// If the sibling is not null, then:
+				if(root->sibling != NULL) {
+					// Creates node from sibling value (recursion)
+					create_nodes(root->sibling, values, level);
+				} else {
+					// Allocates space at the last sibling for the new value
+					root->sibling = allocate_node(values[level-2]);
+					(root->sibling)->child = allocate_node(values[level-1]);
+					// Creates the child nodes of the allocated node
+					create_nodes((root->sibling)->child, values, level+1);
+				}
+			// Else:
+			} else {
+				struct TreeNode *root_temp = allocate_node(root->value);
+				root_temp->child = root->child;
+				root_temp->sibling = root->sibling;
+				root->value = values[level-2];
+				// Sets the root node to the value of the allocated node
+				root->child = allocate_node(values[level-1]);
+				root->sibling = root_temp;
+				create_nodes(root->child, values, level+1);
+			}
+			**/
 		}
+		// If the child is NULL, then allocate space for it
 		if(root->child == NULL) {
 			root->child = allocate_node(values[level-1]);
 		}
+		// Create node for the child
 		create_nodes(root->child, values, level+1);
 	/** If the file name just needs to be entered into a node **/
 	} else {
